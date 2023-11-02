@@ -149,7 +149,7 @@ double * co_autocorrs(const double y[], const int size)
     }
 
     double * out = malloc(nFFT * 2 * sizeof(out));
-    for (int i = 0; i < nFFT; i++) {
+    for (int i = 0; i < nFFT; i++) {  
         out[i] = creal(F[i]);
     }
     free(F);
@@ -157,26 +157,27 @@ double * co_autocorrs(const double y[], const int size)
     return out;
 }
 
-int co_firstzero(const double y[], const int size, const int maxtau)
+//int co_firstzero(const double y[], const int size, const int maxtau, const double * autocorrs)
+int co_firstzero(const double y[], const int size, const int maxtau,const double * autocorrs)
 {
 
-    //double * autocorrs = malloc(size * sizeof * autocorrs);
-    //autocorrs = co_autocorrs(y, size);
+    // double * autocorrs = malloc(size * sizeof * autocorrs);
+    // autocorrs = co_autocorrs(y, size);
 
-    double * autocorrs = co_autocorrs(y, size);
-
+    //double * autocorrs = autocorrs;
+     //double * autocorrs = co_autocorrs(y, size);
     int zerocrossind = 0;
     while(autocorrs[zerocrossind] > 0 && zerocrossind < maxtau)
     {
         zerocrossind += 1;
     }
 
-    free(autocorrs);
+    //free(autocorrs);
     return zerocrossind;
 
 }
 
-double CO_f1ecac(const double y[], const int size)
+double CO_f1ecac(const double y[], const int size, const double * autocorrs)
 {
 
     // NaN check
@@ -189,8 +190,8 @@ double CO_f1ecac(const double y[], const int size)
     }
 
     // compute autocorrelations
-    double * autocorrs = co_autocorrs(y, size);
-
+    //double * autocorrs = co_autocorrs(y, size);
+    //double * autocorrs = autocorrs;
     // threshold to cross
     double thresh = 1.0/exp(1);
 
@@ -214,13 +215,13 @@ double CO_f1ecac(const double y[], const int size)
 
 }
 
-double CO_Embed2_Basic_tau_incircle(const double y[], const int size, const double radius, const int tau)
+double CO_Embed2_Basic_tau_incircle(const double y[], const int size, const double radius, const int tau,const double * autocorrs)
 {
     int tauIntern = 0;
 
     if(tau < 0)
     {
-        tauIntern = co_firstzero(y, size, size);
+        tauIntern = co_firstzero(y, size, size,autocorrs);
     }
     else{
         tauIntern = tau;
@@ -238,7 +239,7 @@ double CO_Embed2_Basic_tau_incircle(const double y[], const int size, const doub
     return insidecount/(size-tauIntern);
 }
 
-double CO_Embed2_Dist_tau_d_expfit_meandiff(const double y[], const int size)
+double CO_Embed2_Dist_tau_d_expfit_meandiff(const double y[], const int size,const double * autocorrs)
 {
 
     // NaN check
@@ -250,7 +251,7 @@ double CO_Embed2_Dist_tau_d_expfit_meandiff(const double y[], const int size)
         }
     }
 
-    int tau = co_firstzero(y, size, size);
+    int tau = co_firstzero(y, size, size,autocorrs);
 
     //printf("co_firstzero ran\n");
 
@@ -348,7 +349,7 @@ double CO_Embed2_Dist_tau_d_expfit_meandiff(const double y[], const int size)
 
 }
 
-int CO_FirstMin_ac(const double y[], const int size)
+int CO_FirstMin_ac(const double y[], const int size, const double * autocorrs)
 {
 
     // NaN check
@@ -360,7 +361,8 @@ int CO_FirstMin_ac(const double y[], const int size)
         }
     }
 
-    double * autocorrs = co_autocorrs(y, size);
+    //double * autocorrs = co_autocorrs(y, size);
+    //double * autocorrs = autocorrs;
 
     int minInd = size;
     for(int i = 1; i < size-1; i++)
@@ -372,7 +374,7 @@ int CO_FirstMin_ac(const double y[], const int size)
         }
     }
 
-    free(autocorrs);
+    //free(autocorrs);
 
     return minInd;
 

@@ -11,7 +11,7 @@
 #include "SB_CoarseGrain.h"
 #include "stats.h"
 
-double SB_TransitionMatrix_3ac_sumdiagcov(const double y[], const int size)
+double SB_TransitionMatrix_3ac_sumdiagcov(const double y[], const int size, const double * autocorrs)
 {
     
     // NaN and const check
@@ -32,7 +32,7 @@ double SB_TransitionMatrix_3ac_sumdiagcov(const double y[], const int size)
     
     const int numGroups = 3;
     
-    int tau = co_firstzero(y, size, size);
+    int tau = co_firstzero(y, size, size,autocorrs);
     
     double * yFilt = malloc(size * sizeof(double));
     

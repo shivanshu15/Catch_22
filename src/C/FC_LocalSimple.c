@@ -19,7 +19,7 @@ double fc_local_simple(const double y[], const int size, const int train_length)
     return m;
 }
 
-double FC_LocalSimple_mean_tauresrat(const double y[], const int size, const int train_length)
+double FC_LocalSimple_mean_tauresrat(const double y[], const int size, const int train_length,const double * autocorrs)
 {
     
     // NaN check
@@ -46,8 +46,8 @@ double FC_LocalSimple_mean_tauresrat(const double y[], const int size, const int
         res[i] = y[i+train_length] - yest;
     }
     
-    double resAC1stZ = co_firstzero(res, size - train_length, size - train_length);
-    double yAC1stZ = co_firstzero(y, size, size);
+    double resAC1stZ = co_firstzero(res, size - train_length, size - train_length, autocorrs);
+    double yAC1stZ = co_firstzero(y, size, size,autocorrs);
     double output = resAC1stZ/yAC1stZ;
     
     free(res);
@@ -93,11 +93,11 @@ double FC_LocalSimple_mean3_stderr(const double y[], const int size)
     return FC_LocalSimple_mean_stderr(y, size, 3);
 }
 
-double FC_LocalSimple_mean1_tauresrat(const double y[], const int size){
-    return FC_LocalSimple_mean_tauresrat(y, size, 1);
+double FC_LocalSimple_mean1_tauresrat(const double y[], const int size,const double * autocorrs){
+    return FC_LocalSimple_mean_tauresrat(y, size, 1, autocorrs);
 }
 
-double FC_LocalSimple_mean_taures(const double y[], const int size, const int train_length)
+double FC_LocalSimple_mean_taures(const double y[], const int size, const int train_length,const double * autocorrs)
 {
     double * res = malloc((size - train_length) * sizeof *res);
     
@@ -118,17 +118,17 @@ double FC_LocalSimple_mean_taures(const double y[], const int size, const int tr
         res[i] = y[i+train_length] - yest;
     }
     
-    int output = co_firstzero(res, size - train_length, size - train_length);
+    int output = co_firstzero(res, size - train_length, size - train_length, autocorrs);
     
     free(res);
     return output;
     
 }
 
-double FC_LocalSimple_lfit_taures(const double y[], const int size)
+double FC_LocalSimple_lfit_taures(const double y[], const int size, const double * autocorrs)
 {
     // set tau from first AC zero crossing
-    int train_length = co_firstzero(y, size, size);
+    int train_length = co_firstzero(y, size, size,autocorrs);
     
     double * xReg = malloc(train_length * sizeof * xReg);
     // double * yReg = malloc(train_length * sizeof * yReg);
@@ -150,7 +150,7 @@ double FC_LocalSimple_lfit_taures(const double y[], const int size)
         res[i] = y[i+train_length] - (m * (train_length+1) + b);
     }
     
-    int output = co_firstzero(res, size - train_length, size - train_length);
+    int output = co_firstzero(res, size - train_length, size - train_length,autocorrs);
     
     free(res);
     free(xReg);

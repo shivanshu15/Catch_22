@@ -10,6 +10,6 @@
 
 #include <stdio.h>
 
-extern double SB_TransitionMatrix_3ac_sumdiagcov(const double y[], const int size);
+extern double SB_TransitionMatrix_3ac_sumdiagcov(const double y[], const int size, const double * autocorrs);
 
 #endif /* SB_TransitionMatrix_h */
